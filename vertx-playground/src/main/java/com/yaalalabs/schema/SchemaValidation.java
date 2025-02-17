@@ -1,17 +1,18 @@
 package com.yaalalabs.schema;
 
-import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.json.pointer.JsonPointer;
+import io.vertx.json.schema.Draft;
 import io.vertx.json.schema.JsonSchema;
 import io.vertx.json.schema.JsonSchemaOptions;
-import io.vertx.json.schema.SchemaParser;
 import io.vertx.json.schema.SchemaRepository;
-import io.vertx.json.schema.SchemaRouter;
 import io.vertx.json.schema.Validator;
 import io.vertx.json.schema.draft7.dsl.StringFormat;
 
-import static io.vertx.json.schema.draft7.dsl.Schemas.*;
+import static io.vertx.json.schema.common.dsl.Schemas.*;
 import static io.vertx.json.schema.draft7.dsl.Keywords.*;
+
+import java.net.URI;
 
 import lombok.Getter;
 
@@ -26,18 +27,18 @@ public class SchemaValidation {
     private SchemaValidation() {
     }
 
-    public static void init(Vertx vertx) {
-        schemaRepository = SchemaRepository.create(new JsonSchemaOptions().setBaseUri(ENV_URI));
+    public static void init() {
+        schemaRepository = SchemaRepository.create(new JsonSchemaOptions().setBaseUri(ENV_URI).setDraft(Draft.DRAFT7));
 
-        addSchema("schema1", getSchema("schema1"));
-        addSchema("schema2", getSchema("schema2"));
+        addSchema(getSchema("schema1"));
+        addSchema(getSchema("schema2"));
     }
 
     public static void addSchema(String schemaName, JsonObject schema) {
         schemaRepository.dereference(JsonSchema.of(schemaName, schema));
     }
 
-    public static void addSchema(String schemaName, JsonSchema schema) {
+    public static void addSchema(JsonSchema schema) {
         schemaRepository.dereference(schema);
     }
 
@@ -51,24 +52,27 @@ public class SchemaValidation {
         switch (schemaName) {
             case "schema1":
                 Schema = objectSchema()
+                        .id(JsonPointer.fromURI(URI.create(ENV_URI + schemaName)))
                         .requiredProperty("name", stringSchema())
                         .requiredProperty("age", intSchema())
                         .toJson();
                 break;
             case "schema2":
                 Schema = objectSchema()
+                        .id(JsonPointer.fromURI(URI.create(ENV_URI + schemaName)))
                         .requiredProperty("name", stringSchema())
                         .requiredProperty("color", stringSchema())
                         .toJson();
                 break;
             default:
                 Schema = objectSchema()
+                        .id(JsonPointer.fromURI(URI.create(ENV_URI + schemaName)))
                         .requiredProperty("name", stringSchema())
                         .requiredProperty("dob", stringSchema().with(format(StringFormat.DATE)))
                         .toJson();
                 break;
         }
 
-        return JsonSchema.of(schemaName, Schema);
+        return JsonSchema.of(Schema);
     }
 }
