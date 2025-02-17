@@ -34,12 +34,24 @@ public class MainVerticle extends AbstractVerticle {
             }
         });
         router.post("/color").handler(ctx -> {
+            Validator validator = SchemaValidation.getValidator("http://localhost:8080/schema2");
             JsonObject body = ctx.body().asJsonObject();
-            ctx.response().end("Your favorite color is " + body.getString("color"));
+            OutputUnit validationResult = validator.validate(body);
+            if (validationResult.getValid()) {
+                ctx.response().end("Your favorite color is " + body.getString("color"));
+            } else {
+                ctx.response().end(validationResult.toJson().encodePrettily());
+            }
         });
         router.post("/dob").handler(ctx -> {
+            Validator validator = SchemaValidation.getValidator("http://localhost:8080/schema3");
             JsonObject body = ctx.body().asJsonObject();
-            ctx.response().end("Your date of birth is " + body.getString("dob"));
+            OutputUnit validationResult = validator.validate(body);
+            if (validationResult.getValid()) {
+                ctx.response().end("Your date of birth is " + body.getString("dob"));
+            } else {
+                ctx.response().end(validationResult.toJson().encodePrettily());
+            }
         });
 
         vertx.createHttpServer()
@@ -60,7 +72,8 @@ public class MainVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void stop() {
+    public void stop(Promise<Void> stopPromise) {
         System.out.println("Shutting down the server");
+        stopPromise.complete();
     }
 }

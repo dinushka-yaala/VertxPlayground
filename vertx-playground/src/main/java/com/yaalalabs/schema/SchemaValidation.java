@@ -32,6 +32,7 @@ public class SchemaValidation {
 
         addSchema(getSchema("schema1"));
         addSchema(getSchema("schema2"));
+        addSchema(getSchema("schema3"));
     }
 
     public static void addSchema(String schemaName, JsonObject schema) {
