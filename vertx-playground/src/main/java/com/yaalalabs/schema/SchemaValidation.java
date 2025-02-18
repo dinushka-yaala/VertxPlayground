@@ -33,6 +33,12 @@ public class SchemaValidation {
         addSchema(getSchema("schema1"));
         addSchema(getSchema("schema2"));
         addSchema(getSchema("schema3"));
+        addSchema(JsonSchema.of(
+            objectSchema()
+            .id(JsonPointer.fromURI(URI.create(ENV_URI)))
+            .requiredProperty("id", stringSchema())
+            .toJson()
+        ));
     }
 
     public static void addSchema(String schemaName, JsonObject schema) {

@@ -34,13 +34,15 @@ public class MainVerticle extends AbstractVerticle {
             }
         });
         router.post("/color").handler(ctx -> {
+            Validator validatorbase = SchemaValidation.getValidator("http://localhost:8080");
             Validator validator = SchemaValidation.getValidator("http://localhost:8080/schema2");
             JsonObject body = ctx.body().asJsonObject();
+            OutputUnit validationResultbase = validatorbase.validate(body);
             OutputUnit validationResult = validator.validate(body);
-            if (validationResult.getValid()) {
+            if (validationResultbase.getValid() && validationResult.getValid()) {
                 ctx.response().end("Your favorite color is " + body.getString("color"));
             } else {
-                ctx.response().end(validationResult.toJson().encodePrettily());
+                ctx.response().end(validationResultbase.toJson().encodePrettily());
             }
         });
         router.post("/dob").handler(ctx -> {
