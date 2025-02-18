@@ -56,6 +56,7 @@ public class SchemaValidation {
                         .id(JsonPointer.fromURI(URI.create(ENV_URI + schemaName)))
                         .requiredProperty("name", stringSchema())
                         .requiredProperty("age", intSchema())
+                        .allowAdditionalProperties(false) // any other property besides the explicitly metioned ones
                         .toJson();
                 break;
             case "schema2":
@@ -63,6 +64,7 @@ public class SchemaValidation {
                         .id(JsonPointer.fromURI(URI.create(ENV_URI + schemaName)))
                         .requiredProperty("name", stringSchema())
                         .requiredProperty("color", stringSchema())
+                        .allowAdditionalProperties(true) // true by default
                         .toJson();
                 break;
             default:
