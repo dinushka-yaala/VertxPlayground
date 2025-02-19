@@ -1,0 +1,96 @@
+{
+    "$id": "root",
+    "definitions": {
+        "A":{
+            "$id": "base",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id"
+            ]
+        },
+        "B":{
+            "$id": "name",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "const": "dinushka"
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
+        "C":{
+            "$id": "age",
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "age"
+            ]
+        },
+        "D":{
+            "$id": "#schema1",
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "base"
+                },
+                {
+                    "$ref": "age"
+                },
+                {
+                    "$ref": "name"
+                }
+            ],
+            "unevaluatedProperties": false
+        },
+        "E":{
+            "$id": "#schema2",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "enum": [
+                        "dinushka",
+                        "sam"
+                    ]
+                },
+                "color": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "color"
+            ],
+            "additionalProperties": true
+        },
+        "F":{
+            "$id": "#schema3",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string",
+                    "format": "date"
+                }
+            },
+            "required": [
+                "name",
+                "dob"
+            ]
+        }
+    }
+}
