@@ -13,6 +13,19 @@
                 "id"
             ]
         },
+        "A.a": {
+            "$id": "namesArray",
+            "type": "object",
+            "properties": {
+                "names": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["names"]
+        },
         "B":{
             "$id": "name",
             "type": "object",
@@ -79,6 +92,21 @@
             "$id": "#schema3",
             "type": "object",
             "properties": {
+                "type": {
+                    "type": "string",
+                    "const": "MESSAGE",
+                    "description": "const is case sensitive"
+                },
+                "id": {
+                    "anyOf": [
+                        { "type": "integer" },
+                        {
+                            "type": "string",
+                            "pattern": "\\w+\\.\\w+"
+                        },
+                        { "type": "null" }
+                    ]
+                },
                 "name": {
                     "type": "string"
                 },
@@ -89,8 +117,74 @@
             },
             "required": [
                 "name",
-                "dob"
+                "dob",
+                "type",
+                "id"
             ]
+        },
+        "G": {
+            "$id": "#schema4",
+            "type": "object",
+            "allOf": [
+                { "$ref": "base" },
+                { "$ref": "namesArray" }
+            ],
+            "unevaluatedProperties": false
+        },
+        "marketId": {
+            "$id": "marketId",
+            "type": "object",
+            "description": "The marketId associated to this request",
+            "properties": {
+                "marketId": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "marketId"
+            ]
+        },
+        "symbol": {
+            "$id": "symbol",
+            "type": "object",
+            "description": "The symbol associated to this request",
+            "properties": {
+                "symbol": {
+                    "type": "string"
+                }
+            },
+            "required": ["symbol"]
+        },
+        "instrument": {
+            "$id": "instrument",
+            "type": "object",
+            "description": "The instrument associated to with request",
+            "allOf": [
+                { "$ref": "marketId" },
+                { "$ref": "symbol" }
+            ]
+        },
+        "instruments": {
+            "$id": "instruments",
+            "type": "object",
+            "description": "An array of instruments related to this message",
+            "properties": {
+                "instruments": {
+                    "type": "array",
+                    "items": { "$ref": "instrument" }
+                }
+            },
+            "required": ["instruments"]
+        },
+        "orderbookStat": {
+            "$id": "#orderbookStat",
+            "type": "object",
+            "description": "Order Book Stat subscription fields",
+            "allOf": [
+                { "$ref": "base" },
+                { "$ref": "instruments" }
+            ],
+            "unevaluatedProperties": false
         }
     }
 }

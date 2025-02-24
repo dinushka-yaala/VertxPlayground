@@ -33,11 +33,25 @@ public class ApiRouter {
                 .failureHandler(this::failureHandler);
         router.post("/dob").handler(ctx -> validateRequest(ctx, "root#schema3", "dob"))
                 .failureHandler(this::failureHandler);
+        router.post("/array").handler(ctx -> validateAndEcho(ctx, "root#schema4"))
+                .failureHandler(this::failureHandler);
+        router.post("/orderbookStat").handler(ctx -> validateAndEcho(ctx, "root#orderbookStat"))
+                .failureHandler(this::failureHandler);
 
         return router;
     }
 
-    private void validateRequest(io.vertx.ext.web.RoutingContext ctx, String schemaId, String fieldName) {
+    private void validateAndEcho(RoutingContext ctx, String schemaId) {
+        JsonObject body = ctx.body().asJsonObject();
+        OutputUnit result = schemaService.validate(schemaId, body);
+        if (result.getValid()) {
+            ctx.response().end(body.encodePrettily());
+        } else {
+            ctx.response().end(result.toJson().encodePrettily());
+        }
+    }
+
+    private void validateRequest(RoutingContext ctx, String schemaId, String fieldName) {
         JsonObject body = ctx.body().asJsonObject();
         OutputUnit validationResult = schemaService.validate(schemaId, body);
         if (validationResult.getValid()) {
