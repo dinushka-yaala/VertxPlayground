@@ -182,7 +182,19 @@
             "description": "Order Book Stat subscription fields",
             "allOf": [
                 { "$ref": "base" },
-                { "$ref": "instruments" }
+                { "$ref": "instruments" },
+                {
+                    "$id": "getInstruments",
+                    "properties": {
+                        "getInstruments": {
+                            "anyOf": [
+                                { "type": "string" },
+                                { "type": "boolean" }
+                            ]
+                        }
+                    },
+                    "required": ["getInstruments"]
+                }
             ],
             "unevaluatedProperties": false
         }
